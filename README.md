@@ -152,10 +152,10 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <th><strong>LV<sub>ENDO</sub></strong></th>
       <th><strong>LV<sub>EPI</sub></strong></th>
       <th><strong>LA</strong></th>
-      <th><strong>DSC ($\uparrow$)</strong></th>
-      <th><strong>HD (mm) ($\downarrow$)</strong></th>
-      <th><strong>MASD (mm) ($\downarrow$)</strong></th>
-      <th><strong><span style="font-weight: bold;">PIA</span> (%) ($\downarrow$)</strong></th>
+      <th><strong>DSC($\uparrow$)</strong></th>
+      <th><strong>HD($\downarrow$)</strong></th>
+      <th><strong>MASD($\downarrow$)</strong></th>
+      <th><strong><span style="font-weight: bold;">PIA</span>(%) ($\downarrow$)</strong></th>
     </tr>
   </thead>
   <tbody>
