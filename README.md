@@ -277,7 +277,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
   </thead>
   <tbody>
     <tr>
-      <td><a href="https://arxiv.org/abs/1505.04597" target="_blank">UNet</a> </cite> (✘)</td>
+      <td><a href="https://arxiv.org/abs/1505.04597" target="_blank">UNet</a>(✘)</td>
       <td>0.864</td>
       <td>5.65</td>
       <td>1.10</td>
@@ -292,7 +292,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>1.21</td>
     </tr>
     <tr>
-      <td>SwinUNetR <cite>(Hatamizadeh et al., 2021)</cite> (✘)</td>
+      <td><a href="https://arxiv.org/abs/2201.01266" target="_blank">SwinUNetR</a>(✘)</td>
       <td>0.834</td>
       <td>8.33</td>
       <td>1.41</td>
@@ -307,7 +307,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>1.68</td>
     </tr>
     <tr>
-      <td>ACNN <cite>(Oktay et al., 2017)</cite> (✘)</td>
+      <td><a href="https://ieeexplore.ieee.org/document/8051114" target="_blank">ACNN</a>(✘)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -322,7 +322,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>BEASNet <cite>(Akbari et al., 2024)</cite> (✘)</td>
+      <td><a href="https://ieeexplore.ieee.org/document/10569083" target="_blank">BEASNet</a>(✘)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -337,7 +337,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>UB<sup>2</sup>DNet <cite>(Cui et al., 2024)</cite> (✘)</td>
+      <td><a href="https://www.sciencedirect.com/science/article/pii/S0950705124010281?via%3Dihub" target="_blank">UB<sup>2</sup>DNet</a>(✘)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -352,7 +352,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>FFPN-R <cite>(Chen et al., 2023)</cite> (✘)</td>
+      <td><a href="https://arxiv.org/abs/2308.13790" target="_blank">FFPN-R</a>(✘)</td>
       <td>0.850</td>
       <td>3.65</td>
       <td>-</td>
@@ -367,7 +367,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>PLANet <cite>(Liu et al., 2021)</cite> (✘)</td>
+      <td><a href="https://www.sciencedirect.com/science/article/pii/S1361841520302371" target="_blank">PLANet</a>(✘)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -382,7 +382,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>CoST-UNet <cite>(Islam et al., 2024)</cite> (✘)</td>
+      <td><a href="https://www.sciencedirect.com/science/article/pii/S1746809424006918" target="_blank">CoSTUNet</a>(✘)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -397,7 +397,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>I<sup>2</sup>UNet <cite>(Dai et al., 2024)</cite> (✘)</td>
+      <td><a href="https://www.sciencedirect.com/science/article/pii/S136184152400166X" target="_blank">I<sup>2</sup>UNet</a>(✘)</td>
       <td>0.873</td>
       <td>4.72</td>
       <td>1.03</td>
@@ -412,7 +412,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>1.19</td>
     </tr>
     <tr>
-      <td><span style="color:blue;">TAM</span>-I<sup>2</sup>UNet <cite>(This work)</cite> (✔)</td>
+       <td>Our TAM-I<sup>2</sup>UNet(✔)</td>
       <td>0.872</td>
       <td>4.19</td>
       <td>1.03</td>
@@ -427,7 +427,22 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>1.11</td>
     </tr>
     <tr>
-      <td>SOCOF <cite>(Xue et al., 2022)</cite> (✔)</td>
+       <td>Our TAM-FCN8s(✔)</td>
+      <td>0.876</td>
+      <td>3.60</td>
+      <td>0.973</td>
+      <td>0.935</td>
+      <td><3.04</td>
+      <td>0.949</td>
+      <td>0.959</td>
+      <td>3.33</td>
+      <td>0.961</td>
+      <td>0.916</td>
+      <td>3.27</td>
+      <td>1.06</td>
+    </tr>
+    <tr>
+      <td><a href="https://ieeexplore.ieee.org/document/9946374" target="_blank">SOCOF</a>(✔)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
@@ -442,7 +457,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
       <td>-</td>
     </tr>
     <tr>
-      <td>CLAS <cite>(Wei et al., 2020)</cite> (✔)</td>
+      <td><a href="https://link.springer.com/chapter/10.1007/978-3-030-59713-9_60" target="_blank">CLAS</a>(✔)</td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
