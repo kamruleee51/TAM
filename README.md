@@ -429,17 +429,17 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
     <tr>
        <td>Our TAM-FCN8s(✔)</td>
       <td><strong>0.876</strong></td>
-      <td>3.60</td>
-      <td>0.973</td>
+      <td><strong>3.60</strong></td>
+      <td><strong>0.973</strong></td>
       <td>0.935</td>
-      <td><3.04</td>
-      <td>0.949</td>
-      <td>0.959</td>
-      <td>3.33</td>
-      <td>0.961</td>
-      <td>0.916</td>
-      <td>3.27</td>
-      <td>1.06</td>
+      <td>3.04</td>
+      <td><strong>0.949</strong></td>
+      <td><strong>0.959</strong></td>
+      <td><strong>3.33</strong></td>
+      <td><strong>0.961</strong></td>
+      <td><strong>0.916</strong></td>
+      <td><strong>3.27</strong></td>
+      <td><strong>1.06</strong></td>
     </tr>
     <tr>
       <td><a href="https://ieeexplore.ieee.org/document/9946374" target="_blank">SOCOF</a>(✔)</td>
