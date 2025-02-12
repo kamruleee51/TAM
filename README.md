@@ -14,10 +14,10 @@ Here, we present a novel, computation-efficient alternative where a <strong>scal
 
 ## Key Contributions:
 - **Novel Temporal Attention Mechanism for Segmentation:**  
-  We present a new **Temporal Attention Module (TAM)**, a **multi-headed, temporal cross-time attention mechanism** based on **KQV projection**, that enables the network to effectively capture dynamic changes across temporal frames for motion-enhanced cardiac anatomy segmentation.
+  - We present a new **Temporal Attention Module (TAM)**, a **multi-headed, temporal cross-time attention mechanism** based on **KQV projection**, that enables the network to effectively capture dynamic changes across temporal frames for motion-enhanced cardiac anatomy segmentation.
 
 - **Flexible Integration into a Range of Segmentation Networks:**  
-  TAM can be **plug-and-play integrated** into a variety of established backbone segmentation architectures, including **UNet, FCN8s, UNetR, SwinUNetR, and I²UNet**, arming them with motion-awareness. This provides a **simple and elegant** approach to implementing motion awareness in future networks.
+  - TAM can be **plug-and-play integrated** into a variety of established backbone segmentation architectures, including [UNet](https://arxiv.org/abs/1505.04597), [FCN8s](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Long_Fully_Convolutional_Networks_2015_CVPR_paper.pdf), [UNetR](https://arxiv.org/abs/2103.10504), [SwinUNetR](https://arxiv.org/abs/2201.01266), [I²UNet](https://www.sciencedirect.com/science/article/pii/S136184152400166X), [DT-VNet](https://ieeexplore.ieee.org/abstract/document/10752102), and others, arming them with motion-awareness. This provides a **simple and elegant** approach to implementing motion awareness in future networks.
 
 - **Consistent Performance Across Multiple Settings:**  
   - **Generalizable** across different image types and qualities, from **2D to 3D cardiac datasets**.  
@@ -25,9 +25,9 @@ Here, we present a novel, computation-efficient alternative where a <strong>scal
   - **Computationally efficient**, adding minimal overhead and outperforming methods that increase input dimensionality.
  
 - **Extensive evaluation on diverse cardiac datasets:**
-  - **2D echocardiography (CAMUS)**
-  - **3D echocardiography (MITEA)**
-  - **3D MRI (ACDC)**
+  - **2D echocardiography ([CAMUS](https://www.creatis.insa-lyon.fr/Challenge/camus/))**
+  - **3D echocardiography ([MITEA](https://www.cardiacatlas.org/mitea/))**
+  - **3D cardiac MRI ([ACDC](https://www.creatis.insa-lyon.fr/Challenge/acdc/))**
 
 Our results confirm that **TAM enhances motion-aware segmentation** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods.
 
