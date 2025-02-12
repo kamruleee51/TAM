@@ -428,7 +428,7 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
     </tr>
     <tr>
        <td>Our TAM-FCN8s(✔)</td>
-      <td>0.876</td>
+      <td><strong>0.876</strong></td>
       <td>3.60</td>
       <td>0.973</td>
       <td>0.935</td>
