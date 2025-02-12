@@ -31,3 +31,47 @@ Here, we present a novel, computation-efficient alternative where a <strong>scal
 
 Our results confirm that **TAM enhances motion-aware segmentation** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods.
 
+# 📌 Temporal Attention Module (TAM) - Dataset Preparation
+
+This document provides an overview of how to **load, preprocess, and structure** cardiac imaging datasets (NIfTI format) for training **motion-aware segmentation networks**.
+
+## 🔹 Overview
+Cardiac image sequences typically consist of:
+- **End-Diastolic (ED) frame**
+- **End-Systolic (ES) frame**
+- **Mid-systolic frames (optional intermediate frames between ED and ES)**
+
+Our dataset preparation pipeline ensures:
+✅ **Efficient loading of NIfTI images**  
+✅ **Rescaling & Normalization** to a consistent resolution  
+✅ **Preserving segmentation labels** during resizing  
+✅ **Multi-frame integration** for temporal attention  
+
+---
+
+## 🛠️ **Pseudocode: Loading & Preprocessing**
+
+### 1️⃣ **Read a NIfTI Image**
+```python
+function read_nifti_img(filepath, target_shape):
+    # Load NIfTI file
+    # Resize if needed
+    # Normalize intensities
+    # Return image tensor
+
+### 2️⃣ **Read a NIfTI Mask**
+```python
+function read_nifti_mask(filepath, target_shape):
+    # Load NIfTI mask file
+    # Resize if needed (using nearest-neighbor interpolation)
+    # Return mask tensor (long dtype for class labels)
+
+class ReadDataset_TA(Dataset):
+    function __init__(self, image_paths, mask_paths, num_mid_frames=None, transform=None):
+        # Initialize dataset with paths and optional transformations
+
+    function __getitem__(self, idx):
+        # Load ED and ES frames and optionally Mid frames
+        # Apply transformations or convert to tensor if no transformation is provided
+        # Combine and return ED, ES, and Mid frames as a dictionary
+
