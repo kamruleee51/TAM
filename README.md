@@ -1,15 +1,11 @@
 # Motion-enhanced Cardiac Anatomy Segmentation via an Insertable Temporal Attention Module
 
 <p align="justify">
-Cardiac anatomy segmentation is very useful for clinical assessment of cardiac morphology and function to inform diagnosis and intervention. Compared to traditional segmentation approaches, deep learning (DL) can improve accuracy significantly, and more recently, studies have shown that enhancing DL segmentation with motion information can further improve it. 
+Cardiac anatomy segmentation is crucial for assessing cardiac morphology and function, aiding diagnosis and intervention. Deep learning (DL) improves accuracy over traditional methods, and recent studies show that adding motion information can enhance segmentation further. However, current methods either increase input dimensionality, making them computationally expensive, or use suboptimal techniques like non-DL registration, non-attention networks, or single-headed attention.
 </p>
 
 <p align="justify">
-However, recent methods for injecting motion information either increase input dimensionality, which is computationally expensive, or use suboptimal approaches, such as non-DL registration, non-attention networks, or single-headed attention. 
-</p>
-
-<p align="justify">
-Here, we present a novel, computation-efficient alternative where a <strong>scalable Temporal Attention Module (TAM)</strong> can be inserted into existing networks for motion enhancement and improved performance. TAM has a <strong>multi-headed, KQV projection cross-attention architecture</strong> and can be seamlessly integrated into a wide range of existing CNN- or Transformer-based networks, making it flexible for future implementations.
+We propose a novel, computation-efficient approach using a <strong>scalable Temporal Attention Module (TAM)</strong> for motion enhancement and improved performance. TAM features a <strong>multi-headed, KQV projection cross-attention architecture</strong> and can be easily integrated into existing CNN- or Transformer-based networks, offering flexibility for future implementations.
 </p>
 
 ## Key Contributions:
@@ -29,9 +25,442 @@ Here, we present a novel, computation-efficient alternative where a <strong>scal
   - **3D echocardiography ([MITEA](https://www.cardiacatlas.org/mitea/))**
   - **3D cardiac MRI ([ACDC](https://www.creatis.insa-lyon.fr/Challenge/acdc/))**
 
-Our results confirm that **TAM enhances motion-aware segmentation** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods.
+Our results confirm that **TAM enhances motion-aware segmentation** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods **(details will be in the paper)**.
 
-# 📌 Temporal Attention Module (TAM) - Dataset Preparation
+# 📌 Result Synopsis
+<table>
+  <caption>Results of integrating our novel TAM with CNN- and Transformer-based segmentation models using the public <strong>CAMUS dataset</strong>. The improvements introduced by the TAM are highlighted in bold. The paper describes the <strong>PIA metric</strong>, which calculates the percentage of the total segmentation area accounted for by such “island areas,” defined as any segmentation mass that is not the largest and that is disconnected from the largest mass. <strong>PIA</strong> measures anatomical plausibility.</caption>
+  <thead>
+    <tr>
+      <th rowspan="2"><strong>Methods</strong></th>
+      <th colspan="4">Class-wise HD (mm) ($\downarrow$)</th>
+      <th colspan="4">The average of the anatomical organs</th>
+    </tr>
+    <tr>
+      <th><strong>LV<sub>MYO</sub></strong></th>
+      <th><strong>LV<sub>ENDO</sub></strong></th>
+      <th><strong>LV<sub>EPI</sub></strong></th>
+      <th><strong>LA</strong></th>
+      <th><strong>DSC ($\uparrow$)</strong></th>
+      <th><strong>HD (mm) ($\downarrow$)</strong></th>
+      <th><strong>MASD (mm) ($\downarrow$)</strong></th>
+      <th><strong><span style="font-weight: bold;">PIA</span> (%) ($\downarrow$)</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>UNet</td>
+      <td>5.65</td>
+      <td>4.21</td>
+      <td>5.67</td>
+      <td>4.91</td>
+      <td>0.913</td>
+      <td>5.11</td>
+      <td>1.13</td>
+      <td>2.05</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-UNet</td>
+      <td><strong>4.05</strong></td>
+      <td><strong>3.07</strong></td>
+      <td><strong>3.89</strong></td>
+      <td><strong>3.52</strong></td>
+      <td><span style="color: blue;"><strong>0.922</strong></span></td>
+      <td><strong>3.63</strong></td>
+      <td><span style="color: blue;"><strong>0.96</strong></span></td>
+      <td><strong>0.68</strong></td>
+    </tr>
+    <tr>
+      <td>FCN8s</td>
+      <td>6.80</td>
+      <td>5.44</td>
+      <td>6.01</td>
+      <td>7.26</td>
+      <td>0.899</td>
+      <td>6.38</td>
+      <td>1.33</td>
+      <td>0.58</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-FCN8s</td>
+      <td><span style="color: blue;"><strong>3.60</strong></span></td>
+      <td><span style="color: blue;"><strong>3.04</strong></span></td>
+      <td><span style="color: blue;"><strong>3.33</strong></span></td>
+      <td><span style="color: blue;"><strong>3.27</strong></span></td>
+      <td><strong>0.921</strong></td>
+      <td><span style="color: blue;"><strong>3.31</strong></span></td>
+      <td><strong>0.98</strong></td>
+      <td><span style="color: blue;"><strong>0.02</strong></span></td>
+    </tr>
+    <tr>
+      <td>UNetR</td>
+      <td>8.03</td>
+      <td>5.59</td>
+      <td>7.71</td>
+      <td>8.35</td>
+      <td>0.897</td>
+      <td>7.42</td>
+      <td>1.43</td>
+      <td>2.43</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-UNetR</td>
+      <td><strong>6.08</strong></td>
+      <td><strong>4.62</strong></td>
+      <td><strong>5.86</strong></td>
+      <td><strong>6.05</strong></td>
+      <td><strong>0.904</strong></td>
+      <td><strong>5.65</strong></td>
+      <td><strong>1.24</strong></td>
+      <td><strong>0.92</strong></td>
+    </tr>
+    <tr>
+      <td>SwinUNetR</td>
+      <td>8.33</td>
+      <td>5.60</td>
+      <td>8.24</td>
+      <td>6.41</td>
+      <td>0.888</td>
+      <td>7.15</td>
+      <td>1.52</td>
+      <td>2.67</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-SwinUNetR</td>
+      <td><strong>5.63</strong></td>
+      <td><strong>4.25</strong></td>
+      <td><strong>5.32</strong></td>
+      <td><strong>4.11</strong></td>
+      <td><strong>0.913</strong></td>
+      <td><strong>4.83</strong></td>
+      <td><strong>1.15</strong></td>
+      <td><strong>1.32</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <caption>Results of integrating our novel 3D-TAM with 3D-CNN- and Transformer-based segmentation models using public <strong>3D echocardiography (MITEA)</strong>. Improvements introduced by the TAM are highlighted in bold. </caption>
+  <thead>
+    <tr>
+      <th rowspan="2"><strong>Methods</strong></th>
+      <th colspan="4">Class-wise HD (mm) ($\downarrow$)</th>
+      <th colspan="4">The average of the anatomical organs</th>
+    </tr>
+    <tr>
+      <th><strong>LV<sub>MYO</sub></strong></th>
+      <th><strong>LV<sub>ENDO</sub></strong></th>
+      <th><strong>LV<sub>EPI</sub></strong></th>
+      <th><strong>LA</strong></th>
+      <th><strong>DSC ($\uparrow$)</strong></th>
+      <th><strong>HD (mm) ($\downarrow$)</strong></th>
+      <th><strong>MASD (mm) ($\downarrow$)</strong></th>
+      <th><strong><span style="font-weight: bold;">PIA</span> (%) ($\downarrow$)</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>UNet</td>
+      <td>14.58</td>
+      <td>9.89</td>
+      <td>12.31</td>
+      <td>-</td>
+      <td>0.830</td>
+      <td>12.26</td>
+      <td>2.03</td>
+      <td>0.30</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-UNet</td>
+      <td><strong>11.47</strong></td>
+      <td><strong>9.14</strong></td>
+      <td><strong>10.84</strong></td>
+      <td>-</td>
+      <td><strong>0.833</strong></td>
+      <td><strong>10.48</strong></td>
+      <td><strong>1.97</strong></td>
+      <td><strong>0.16</strong></td>
+    </tr>
+    <tr>
+      <td>FCN8s</td>
+      <td>12.07</td>
+      <td>11.95</td>
+      <td>10.95</td>
+      <td>-</td>
+      <td>0.828</td>
+      <td>11.66</td>
+      <td>2.06</td>
+      <td>1.07</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-FCN8s</td>
+      <td><span style="color: blue;"><strong>9.27</strong></span></td>
+      <td><span style="color: blue;"><strong>7.59</strong></span></td>
+      <td><span style="color: blue;"><strong>8.24</strong></span></td>
+      <td>-</td>
+      <td><span style="color: blue;"><strong>0.836</strong></span></td>
+      <td><span style="color: blue;"><strong>8.37</strong></span></td>
+      <td><span style="color: blue;"><strong>1.93</strong></span></td>
+      <td><span style="color: blue;"><strong>0.22</strong></span></td>
+    </tr>
+    <tr>
+      <td>UNetR</td>
+      <td>13.39</td>
+      <td>11.85</td>
+      <td>12.74</td>
+      <td>-</td>
+      <td>0.806</td>
+      <td>12.66</td>
+      <td>2.34</td>
+      <td>0.53</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-UNetR</td>
+      <td><strong>10.70</strong></td>
+      <td><strong>9.56</strong></td>
+      <td><strong>9.96</strong></td>
+      <td>-</td>
+      <td><strong>0.814</strong></td>
+      <td><strong>10.07</strong></td>
+      <td><strong>2.21</strong></td>
+      <td><strong>0.38</strong></td>
+    </tr>
+    <tr>
+      <td>SwinUNetR</td>
+      <td>10.95</td>
+      <td>10.10</td>
+      <td>10.25</td>
+      <td>-</td>
+      <td>0.818</td>
+      <td>10.43</td>
+      <td>2.27</td>
+      <td>0.36</td>
+    </tr>
+    <tr>
+      <td><strong>TAM</strong>-SwinUNetR</td>
+      <td><strong>9.67</strong></td>
+      <td><strong>8.67</strong></td>
+      <td><strong>9.01</strong></td>
+      <td>-</td>
+      <td><strong>0.823</strong></td>
+      <td><strong>9.12</strong></td>
+      <td><strong>2.12</strong></td>
+      <td><strong>0.23</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <caption>Comparison of segmentation performance on the CAMUS dataset across state-of-the-art methods and our proposed motion-aware TAM-based segmentation models. Best-performing metrics are highlighted in bold.</caption>
+  <thead>
+    <tr>
+      <th rowspan="2">Methods (motion?)</th>
+      <th colspan="3">LV<sub>MYO</sub></th>
+      <th colspan="3">LV<sub>ENDO</sub></th>
+      <th colspan="3">LV<sub>EPI</sub></th>
+      <th colspan="3">LA</th>
+    </tr>
+    <tr>
+      <th>DSC (↑)</th>
+      <th>HD (↓)</th>
+      <th>MASD (↓)</th>
+      <th>DSC (↑)</th>
+      <th>HD (↓)</th>
+      <th>MASD (↓)</th>
+      <th>DSC (↑)</th>
+      <th>HD (↓)</th>
+      <th>MASD (↓)</th>
+      <th>DSC (↑)</th>
+      <th>HD (↓)</th>
+      <th>MASD (↓)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://arxiv.org/abs/1505.04597" target="_blank">UNet</a> </cite> (✘)</td>
+      <td>0.864</td>
+      <td>5.65</td>
+      <td>1.10</td>
+      <td>0.927</td>
+      <td>4.21</td>
+      <td>1.06</td>
+      <td>0.954</td>
+      <td>5.67</td>
+      <td>1.15</td>
+      <td>0.904</td>
+      <td>4.91</td>
+      <td>1.21</td>
+    </tr>
+    <tr>
+      <td>SwinUNetR <cite>(Hatamizadeh et al., 2021)</cite> (✘)</td>
+      <td>0.834</td>
+      <td>8.33</td>
+      <td>1.41</td>
+      <td>0.908</td>
+      <td>5.60</td>
+      <td>1.42</td>
+      <td>0.939</td>
+      <td>8.24</td>
+      <td>1.56</td>
+      <td>0.869</td>
+      <td>6.41</td>
+      <td>1.68</td>
+    </tr>
+    <tr>
+      <td>ACNN <cite>(Oktay et al., 2017)</cite> (✘)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.918</td>
+      <td>5.90</td>
+      <td>1.80</td>
+      <td>0.946</td>
+      <td>6.35</td>
+      <td>1.95</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>BEASNet <cite>(Akbari et al., 2024)</cite> (✘)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.915</td>
+      <td>6.0</td>
+      <td>1.95</td>
+      <td>0.943</td>
+      <td>6.35</td>
+      <td>2.15</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>UB<sup>2</sup>DNet <cite>(Cui et al., 2024)</cite> (✘)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.858</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>FFPN-R <cite>(Chen et al., 2023)</cite> (✘)</td>
+      <td>0.850</td>
+      <td>3.65</td>
+      <td>-</td>
+      <td>0.924</td>
+      <td>3.05</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.888</td>
+      <td>3.80</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>PLANet <cite>(Liu et al., 2021)</cite> (✘)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td><strong style="color:blue;">0.944</strong></td>
+      <td>4.14</td>
+      <td>1.26</td>
+      <td>0.957</td>
+      <td>5.0</td>
+      <td>1.72</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>CoST-UNet <cite>(Islam et al., 2024)</cite> (✘)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.916</td>
+      <td>6.55</td>
+      <td>-</td>
+      <td>0.837</td>
+      <td>7.65</td>
+      <td>-</td>
+      <td>0.875</td>
+      <td>6.70</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>I<sup>2</sup>UNet <cite>(Dai et al., 2024)</cite> (✘)</td>
+      <td>0.873</td>
+      <td>4.72</td>
+      <td>1.03</td>
+      <td>0.933</td>
+      <td>3.49</td>
+      <td>1.02</td>
+      <td>0.956</td>
+      <td>4.39</td>
+      <td>1.09</td>
+      <td>0.910</td>
+      <td>4.25</td>
+      <td>1.19</td>
+    </tr>
+    <tr>
+      <td><span style="color:blue;">TAM</span>-I<sup>2</sup>UNet <cite>(This work)</cite> (✔)</td>
+      <td>0.872</td>
+      <td>4.19</td>
+      <td>1.03</td>
+      <td>0.933</td>
+      <td><strong style="color:blue;">3.02</strong></td>
+      <td>0.972</td>
+      <td>0.956</td>
+      <td>3.92</td>
+      <td>1.06</td>
+      <td>0.913</td>
+      <td>3.74</td>
+      <td>1.11</td>
+    </tr>
+    <tr>
+      <td>SOCOF <cite>(Xue et al., 2022)</cite> (✔)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.932</td>
+      <td>3.21</td>
+      <td>1.40</td>
+      <td>0.953</td>
+      <td>4.0</td>
+      <td>1.65</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>CLAS <cite>(Wei et al., 2020)</cite> (✔)</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0.935</td>
+      <td>4.60</td>
+      <td>1.40</td>
+      <td>0.958</td>
+      <td>4.85</td>
+      <td>1.55</td>
+      <td>0.915</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+
+# 📌 Implementation
 
 This document provides an overview of how to **load, preprocess, and structure** cardiac imaging datasets (NIfTI format) for training **motion-aware segmentation networks**.
 
