@@ -27,6 +27,181 @@ We propose a novel, computation-efficient approach using a <strong>scalable Temp
 
 Our results confirm that **TAM enhances motion-aware segmentation** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods **(details will be in the paper)**.
 
+
+# 📌 Implementation
+
+This section provides an overview of how to **load, preprocess, and structure** cardiac imaging datasets (NIfTI format) for training and validating our **motion-aware segmentation networks**.
+
+## 🔹 Overview  
+Cardiac image sequences typically include multiple frames:  
+
+- **End-Diastolic (ED) Frame**  
+- **End-Systolic (ES) Frame**  
+- **Mid-Systolic Frames** (optional, intermediate frames between ED and ES)  
+
+For training our TAM network, at least two frames (ED and ES) are required. However, incorporating a mid-systolic frame enhances performance by helping the network bridge the large motion between ED and ES. $$\textcolor{red}{\text{Below is the pseudocode for our data loader class, which integrates these key components:}}$$
+
+Our dataset preparation pipeline ensures:
+
+✅ **Efficient loading of NIfTI images**  
+✅ **Rescaling & Normalization** to a consistent resolution  
+✅ **Preserving segmentation labels** during resizing  
+✅ **Multi-frame integration** for temporal attention  
+
+
+## 🛠️ **Dataset Processing Pipeline**
+
+### 1️⃣ Load & Preprocess NIfTI Image/Mask
+```python
+function load_nifti(filepath, target_shape, is_mask=False):
+    # Load NIfTI image or mask
+    # Resize: Cubic interpolation for images, Nearest-neighbor for masks
+    # Normalize image intensities (if not a mask)
+    # Convert to tensor (float for images, long for masks)
+    return tensor
+
+function load_image_mask_pair(base_path, frame_type):
+    # Load image and mask for given frame type (ED, ES, Mid)
+    # Use load_nifti() for consistent processing
+    return {'image': image, 'mask': mask}
+```
+
+### 2️⃣ DataLoader Class
+```python
+class TAM_Dataset(Dataset):
+    function __init__(self, image_paths, mask_paths, num_mid_frames=None, transform=None):
+        # Initialize dataset paths, frame count, and transformations
+
+    function __getitem__(self, idx):
+        # Extract base paths for images & masks
+        # Load ED & ES frames
+        # Load Mid frames if available
+        # Apply transformations (if any) or convert to tensor
+        return {'ED': ed_data, 'ES': es_data, 'Mid': mid_data (if available)}
+```
+
+# 📌 Temporal Attention Module (TAM)
+
+## 🔹 Overview
+This module performs **multi-frame self-attention** to enhance temporal feature learning.  
+It integrates **multi-head attention, gating, and convolutional refinement** for **motion-aware feature aggregation**.
+
+---
+
+## 🛠️ **Pseudocode for TAM**
+```python
+Class MultiHeadAttention:
+    Initialize(num_channels, embedding_dim, num_heads):
+        - Define Query, Key, and Value projection layers (Conv3D)
+        - Initialize Multi-Head Attention
+        - Define gating mechanism (Conv3D + Sigmoid)
+        - Define feature fusion layer (Conv3D + BatchNorm + ReLU)
+        - Define final classifier (Conv3D)
+
+    Forward(frame_sequence):
+        Initialize output_list
+
+        For each reference_frame in frame_sequence:
+            Initialize combined_output = 0
+
+            For each comparison_frame in frame_sequence:
+                If reference_frame == comparison_frame:
+                    - Continue (skip self-attention)
+
+                # Project frame features into Query, Key, Value
+                query = ProjectQuery(comparison_frame)
+                key = ProjectKey(reference_frame)
+                value = ProjectValue(reference_frame)
+
+                # Compute attention-weighted features using scaled dot-product attention
+                attention_output = ComputeScaledDotProductAttention(query, key, value)
+
+                # Apply gating mechanism to the attention output
+                attention_mask = ApplyGatingMechanism(attention_output)
+                attention_output = attention_output * attention_mask
+
+                # Concatenate attended output with original frame
+                combined_features = Concatenate(attention_output, reference_frame)
+                combined_features = ApplyFeatureFusion(combined_features)
+                combined_features = ApplyBatchNorm(combined_features)
+                combined_features = ApplyReLU(combined_features)
+
+                # Accumulate attention results
+                combined_output += combined_features
+
+            # Average attention results across all frames and classify
+            avg_output = combined_output / (total_frames - 1)
+            final_output = ApplyClassifier(avg_output)
+            Add final_output to output_list
+
+        Return output_list
+```
+
+## 🛠️ **Pseudocode for TAM-UNet**
+```python
+class ConvBlock(nn.Module):
+    function __init__(self, in_channels, out_channels):
+        # Initialize two 3D convolution layers followed by Batch Normalization and ReLU activation
+        # conv1: Conv3D + BatchNorm + ReLU
+        # conv2: Conv3D + BatchNorm + ReLU
+
+    function forward(self, x):
+        # Apply conv1, batch normalization, and ReLU activation
+        # Apply conv2, batch normalization, and ReLU activation
+        return processed_output
+
+
+class EncoderBlock(nn.Module):
+    function __init__(self, in_channels, out_channels):
+        # Initialize ConvBlock followed by MaxPooling (2x2x2)
+
+    function forward(self, x):
+        # Pass input through ConvBlock
+        # Apply MaxPooling
+        return conv_output, pooled_output
+
+
+class DecoderBlock(nn.Module):
+    function __init__(self, in_channels, out_channels):
+        # Initialize ConvTranspose3D for upsampling followed by ConvBlock
+
+    function forward(self, x, skip_connection):
+        # Upsample input using ConvTranspose3D
+        # Concatenate upsampled input with the skip connection
+        # Pass through ConvBlock
+        return decoded_output
+
+
+class Encoder(nn.Module):
+    function __init__(self, input_channels, feature_depths):
+        # Initialize EncoderBlocks for multiple stages and Bottleneck layer
+        # Initialize attention mechanisms at bottleneck and last encoder stage
+
+    function forward(self, *frames):
+        # For each frame:
+            # Process through EncoderBlock stages
+            # Collect and store outputs at each stage (s1, s2, s3, s4) and pooled output (p4)
+        # Stack outputs from all frames for attention
+        # Apply attention (TAM) on pooled outputs and bottleneck outputs
+        return tuple of all outputs
+
+
+class UNet(nn.Module):
+    function __init__(self, num_classes, feature_depths):
+        # Initialize Encoder
+        # Initialize DecoderBlocks for each stage of U-Net
+        # Initialize final Conv3D layer for classification and Softmax activation
+
+    function forward(self, *inputs):
+        # Get outputs from Encoder
+        # For each frame:
+            # Unpack encoder outputs for skip connections and bottleneck
+            # Pass through DecoderBlocks, using skip connections for each frame
+        # Apply final classification (Conv3D + Softmax) to get segmentation mask
+        return tuple of masks
+```
+
+
 # 📌 Result Synopsis
 <table>
   <caption>Results of integrating our novel TAM with CNN- and Transformer-based segmentation models using the public <strong>CAMUS dataset</strong>. The improvements introduced by the TAM are highlighted in bold. The paper describes the <strong>PIA metric</strong>, which calculates the percentage of the total segmentation area accounted for by such “island areas,” defined as any segmentation mass that is not the largest and that is disconnected from the largest mass. <strong>PIA</strong> measures anatomical plausibility.</caption>
@@ -473,177 +648,3 @@ Our results confirm that **TAM enhances motion-aware segmentation** while mainta
     </tr>
   </tbody>
 </table>
-
-
-# 📌 Implementation
-
-This section provides an overview of how to **load, preprocess, and structure** cardiac imaging datasets (NIfTI format) for training and validating our **motion-aware segmentation networks**.
-
-## 🔹 Overview  
-Cardiac image sequences typically include multiple frames:  
-
-- **End-Diastolic (ED) Frame**  
-- **End-Systolic (ES) Frame**  
-- **Mid-Systolic Frames** (optional, intermediate frames between ED and ES)  
-
-For training our TAM network, at least two frames (ED and ES) are required. However, incorporating a mid-systolic frame enhances performance by helping the network bridge the large motion between ED and ES. $$\textcolor{red}{\text{Below is the pseudocode for our data loader class, which integrates these key components:}}$$
-
-Our dataset preparation pipeline ensures:
-
-✅ **Efficient loading of NIfTI images**  
-✅ **Rescaling & Normalization** to a consistent resolution  
-✅ **Preserving segmentation labels** during resizing  
-✅ **Multi-frame integration** for temporal attention  
-
-
-## 🛠️ **Dataset Processing Pipeline**
-
-### 1️⃣ Load & Preprocess NIfTI Image/Mask
-```python
-function load_nifti(filepath, target_shape, is_mask=False):
-    # Load NIfTI image or mask
-    # Resize: Cubic interpolation for images, Nearest-neighbor for masks
-    # Normalize image intensities (if not a mask)
-    # Convert to tensor (float for images, long for masks)
-    return tensor
-
-function load_image_mask_pair(base_path, frame_type):
-    # Load image and mask for given frame type (ED, ES, Mid)
-    # Use load_nifti() for consistent processing
-    return {'image': image, 'mask': mask}
-```
-
-### 2️⃣ DataLoader Class
-```python
-class TAM_Dataset(Dataset):
-    function __init__(self, image_paths, mask_paths, num_mid_frames=None, transform=None):
-        # Initialize dataset paths, frame count, and transformations
-
-    function __getitem__(self, idx):
-        # Extract base paths for images & masks
-        # Load ED & ES frames
-        # Load Mid frames if available
-        # Apply transformations (if any) or convert to tensor
-        return {'ED': ed_data, 'ES': es_data, 'Mid': mid_data (if available)}
-```
-
-# 📌 Temporal Attention Module (TAM)
-
-## 🔹 Overview
-This module performs **multi-frame self-attention** to enhance temporal feature learning.  
-It integrates **multi-head attention, gating, and convolutional refinement** for **motion-aware feature aggregation**.
-
----
-
-## 🛠️ **Pseudocode for TAM**
-```python
-Class MultiHeadAttention:
-    Initialize(num_channels, embedding_dim, num_heads):
-        - Define Query, Key, and Value projection layers (Conv3D)
-        - Initialize Multi-Head Attention
-        - Define gating mechanism (Conv3D + Sigmoid)
-        - Define feature fusion layer (Conv3D + BatchNorm + ReLU)
-        - Define final classifier (Conv3D)
-
-    Forward(frame_sequence):
-        Initialize output_list
-
-        For each reference_frame in frame_sequence:
-            Initialize combined_output = 0
-
-            For each comparison_frame in frame_sequence:
-                If reference_frame == comparison_frame:
-                    - Continue (skip self-attention)
-
-                # Project frame features into Query, Key, Value
-                query = ProjectQuery(comparison_frame)
-                key = ProjectKey(reference_frame)
-                value = ProjectValue(reference_frame)
-
-                # Compute attention-weighted features using scaled dot-product attention
-                attention_output = ComputeScaledDotProductAttention(query, key, value)
-
-                # Apply gating mechanism to the attention output
-                attention_mask = ApplyGatingMechanism(attention_output)
-                attention_output = attention_output * attention_mask
-
-                # Concatenate attended output with original frame
-                combined_features = Concatenate(attention_output, reference_frame)
-                combined_features = ApplyFeatureFusion(combined_features)
-                combined_features = ApplyBatchNorm(combined_features)
-                combined_features = ApplyReLU(combined_features)
-
-                # Accumulate attention results
-                combined_output += combined_features
-
-            # Average attention results across all frames and classify
-            avg_output = combined_output / (total_frames - 1)
-            final_output = ApplyClassifier(avg_output)
-            Add final_output to output_list
-
-        Return output_list
-```
-
-## 🛠️ **Pseudocode for TAM-UNet**
-```python
-class ConvBlock(nn.Module):
-    function __init__(self, in_channels, out_channels):
-        # Initialize two 3D convolution layers followed by Batch Normalization and ReLU activation
-        # conv1: Conv3D + BatchNorm + ReLU
-        # conv2: Conv3D + BatchNorm + ReLU
-
-    function forward(self, x):
-        # Apply conv1, batch normalization, and ReLU activation
-        # Apply conv2, batch normalization, and ReLU activation
-        return processed_output
-
-
-class EncoderBlock(nn.Module):
-    function __init__(self, in_channels, out_channels):
-        # Initialize ConvBlock followed by MaxPooling (2x2x2)
-
-    function forward(self, x):
-        # Pass input through ConvBlock
-        # Apply MaxPooling
-        return conv_output, pooled_output
-
-
-class DecoderBlock(nn.Module):
-    function __init__(self, in_channels, out_channels):
-        # Initialize ConvTranspose3D for upsampling followed by ConvBlock
-
-    function forward(self, x, skip_connection):
-        # Upsample input using ConvTranspose3D
-        # Concatenate upsampled input with the skip connection
-        # Pass through ConvBlock
-        return decoded_output
-
-
-class Encoder(nn.Module):
-    function __init__(self, input_channels, feature_depths):
-        # Initialize EncoderBlocks for multiple stages and Bottleneck layer
-        # Initialize attention mechanisms at bottleneck and last encoder stage
-
-    function forward(self, *frames):
-        # For each frame:
-            # Process through EncoderBlock stages
-            # Collect and store outputs at each stage (s1, s2, s3, s4) and pooled output (p4)
-        # Stack outputs from all frames for attention
-        # Apply attention (TAM) on pooled outputs and bottleneck outputs
-        return tuple of all outputs
-
-
-class UNet(nn.Module):
-    function __init__(self, num_classes, feature_depths):
-        # Initialize Encoder
-        # Initialize DecoderBlocks for each stage of U-Net
-        # Initialize final Conv3D layer for classification and Softmax activation
-
-    function forward(self, *inputs):
-        # Get outputs from Encoder
-        # For each frame:
-            # Unpack encoder outputs for skip connections and bottleneck
-            # Pass through DecoderBlocks, using skip connections for each frame
-        # Apply final classification (Conv3D + Softmax) to get segmentation mask
-        return tuple of masks
-```
