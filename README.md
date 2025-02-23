@@ -5,7 +5,7 @@ Cardiac anatomy segmentation is crucial for assessing cardiac morphology and fun
 </p>
 
 <p align="justify">
-We propose a novel, computation-efficient approach using a <strong>scalable Temporal Attention Module (TAM)</strong> for motion enhancement and improved performance. TAM features a <strong>multi-headed, KQV projection cross-attention architecture</strong> and can be easily integrated into existing CNN- or Transformer-based networks, offering flexibility for future implementations.
+We propose a novel, computation-efficient approach using a <strong>scalable Temporal Attention Module (TAM)</strong> for motion enhancement and improved performance. TAM features a <strong>multi-headed, KQV projection cross-attention architecture</strong> and can be easily integrated into existing CNN, Transformer, or Hybrid segmentation networks, offering flexibility for future implementations.
 </p>
 
 ## Key Contributions:
@@ -25,21 +25,38 @@ We propose a novel, computation-efficient approach using a <strong>scalable Temp
   - **3D echocardiography ([MITEA](https://www.cardiacatlas.org/mitea/))**
   - **3D cardiac MRI ([ACDC](https://www.creatis.insa-lyon.fr/Challenge/acdc/))**
 
-Our results confirm that **TAM enhances motion-aware segmentation** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods **(details will be in the paper)**.
+Our results confirm that **TAM enhances motion-aware segmentation (see in the following video)** while maintaining computational efficiency, making it a promising addition to future deep learning-based cardiac segmentation methods **(details will be in the paper)**.
 
+![Image](https://github.com/user-attachments/assets/d3caa003-8e80-46cb-9b25-32a3c9a6a194)
 
 # 📌 Implementation
 
 This section provides an overview of how to **load, preprocess, and structure** cardiac imaging datasets (NIfTI format) for training and validating our **motion-aware segmentation networks**.
 
-## 🔹 Overview  
+## 🔹 Training Hyperparameters:  
+✅ **Loss Function:** Combination of DICE score and cross-entropy, in alignment with recent [literature](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10526382). 
+
+✅ **Epoch Numbers:**
+
+✅ **Batch Size:**
+
+✅ **Image Size:** For the CAMUS 2D dataset, the image size is 256×256, while for the MITEA 3D dataset, it is 128×128×128, and for the ACDC 3D dataset, it is 160×160×16, following the [nnFormer](https://ieeexplore.ieee.org/document/10183842) settings.
+
+✅ **Loss function:**
+
+✅ **Loss function:**
+
+
+
+
+## 🛠️ **Dataset Processing Pipeline**
 Cardiac image sequences typically include multiple frames:  
 
 - **End-Diastolic (ED) Frame**  
 - **End-Systolic (ES) Frame**  
 - **Mid-Systolic Frames** (optional, intermediate frames between ED and ES)  
 
-For training our TAM network, at least two frames (ED and ES) are required. However, incorporating a mid-systolic frame enhances performance by helping the network bridge the large motion between ED and ES. $$\textcolor{red}{\text{Below is the pseudocode for our data loader class, which integrates these key components:}}$$
+For training our TAM network, at least two frames (ED and ES) are required. However, incorporating a mid-systolic frame enhances performance by helping the network bridge the large motion between ED and ES. 
 
 Our dataset preparation pipeline ensures:
 
@@ -48,8 +65,6 @@ Our dataset preparation pipeline ensures:
 ✅ **Preserving segmentation labels** during resizing  
 ✅ **Multi-frame integration** for temporal attention  
 
-
-## 🛠️ **Dataset Processing Pipeline**
 
 ### 1️⃣ Load & Preprocess NIfTI Image/Mask
 ```python
