@@ -36,16 +36,13 @@ This section provides an overview of how to **load, preprocess, and structure** 
 ## 🔹 Training Hyperparameters:  
 ✅ **Loss Function:** Combination of DICE score and cross-entropy, in alignment with recent [literature](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10526382). 
 
-✅ **Epoch Numbers:**
+✅ **Epoch Numbers:** 300
 
-✅ **Batch Size:**
+✅ **Batch Size:** 8 for the CAMUS dataset and 4 for the MITEA and ACDC datasets.
 
 ✅ **Image Size:** For the CAMUS 2D dataset, the image size is 256×256, while for the MITEA 3D dataset, it is 128×128×128, and for the ACDC 3D dataset, it is 160×160×16, following the [nnFormer](https://ieeexplore.ieee.org/document/10183842) settings.
 
-✅ **Loss function:**
-
-✅ **Loss function:**
-
+✅ **Optimizer and LR:** **Adam** optimizer with a learning rate of `1e-4` for the **CAMUS** and **MITEA** datasets. **SGD** with a **polynomial learning rate schedule** for the **ACDC** dataset, following the **nnFormer settings**.
 
 
 
@@ -97,9 +94,7 @@ class TAM_Dataset(Dataset):
 
 # 📌 Temporal Attention Module (TAM)
 
-## 🔹 Overview
-This module performs **multi-frame self-attention** to enhance temporal feature learning.  
-It integrates **multi-head attention, gating, and convolutional refinement** for **motion-aware feature aggregation**.
+This module performs **multi-frame self-attention** to enhance temporal feature learning. It integrates **multi-head attention, gating, and convolutional refinement** for **motion-aware feature aggregation**.
 
 ---
 
@@ -663,3 +658,8 @@ class UNet(nn.Module):
     </tr>
   </tbody>
 </table>
+
+
+
+# ⚠ More Details Coming Soon!
+
