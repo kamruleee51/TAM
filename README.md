@@ -1,5 +1,7 @@
 # Motion-enhanced Cardiac Anatomy Segmentation via an Insertable Temporal Attention Module
 
+# ⚠ Implementation details and updated code will be released soon.
+
 <p align="justify">
 Cardiac anatomy segmentation is crucial for assessing cardiac morphology and function, aiding diagnosis and intervention. Deep learning (DL) improves accuracy over traditional methods, and recent studies show that adding motion information can enhance segmentation further. However, current methods either increase input dimensionality, making them computationally expensive, or use suboptimal techniques like non-DL registration, non-attention networks, or single-headed attention.
 </p>
@@ -660,6 +662,4 @@ class UNet(nn.Module):
 </table>
 
 
-
-# ⚠ More Details Coming Soon!
 
